@@ -1,0 +1,5 @@
+{
+  "target_url": "https://www.google.com",
+  "fallback_url": "https://ickaohsiung.com",
+  "expiration_time": 60
+}

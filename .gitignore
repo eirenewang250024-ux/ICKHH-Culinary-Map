@@ -1,0 +1,15 @@
+# Database
+qrcode.db
+
+# Old config
+config.json
+
+# Python
+__pycache__/
+*.pyc
+
+# Environment
+.env
+
+# Demo HTML
+demo_*.html
