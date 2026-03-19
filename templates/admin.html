@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>管理後台 — 洲遊味蕾旅遊地圖</title>
+    <meta name="description" content="QR Code 產生器後台管理" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet" />
+    <style>
+        /* ===== Reset & Base ===== */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Palette provided by user */
+            --c-gold: #bfb592;
+            --c-sand: #d4c3b7;
+            --c-grey: #78786e;
+            --c-light: #e1e1e0;
+            --c-white: #ffffff;
+            --c-charcoal: #3d3935;
+
+            --bg: #fdfdfc;
+            --surface: rgba(255, 255, 255, 0.9);
+            --border: rgba(212, 195, 183, 0.6);
+            
+            --text: var(--c-charcoal);
+            --text-dim: var(--c-grey);
+            --card-r: 20px;
+
+            --success: #6b8e23;
+            --success-bg: rgba(107, 142, 35, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Serif TC', system-ui, sans-serif;
+            background: #ffffff;
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url('/static/bg.png') center/cover no-repeat;
+            opacity: 0.7;
+            z-index: 0;
+        }
+
+        /* ===== Card ===== */
+        .card {
+            position: relative;
+            z-index: 1;
+            background: var(--surface);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--border);
+            border-radius: var(--card-r);
+            padding: 48px 44px 40px;
+            max-width: 500px;
+            width: 92vw;
+            box-shadow: 
+                0 24px 60px rgba(61, 57, 53, 0.05),
+                0 4px 12px rgba(212, 195, 183, 0.1);
+            animation: cardFadeIn 0.6s ease-out both;
+        }
+
+        @keyframes cardFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card h1 {
+            font-family: 'Noto Serif TC', serif;
+            font-size: 1.45rem;
+            font-weight: 600;
+            color: var(--c-charcoal);
+            margin-bottom: 6px;
+            letter-spacing: 0.03em;
+            text-align: center;
+        }
+
+        .card .subtitle {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            margin-bottom: 30px;
+            letter-spacing: 0.04em;
+            text-align: center;
+        }
+
+        /* ===== Divider ===== */
+        .divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 0 auto 32px;
+            width: 50%;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            height: 1px;
+            flex: 1;
+            background: var(--c-sand);
+        }
+
+        /* ===== Flash messages ===== */
+        .flash {
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 24px;
+            text-align: center;
+            animation: flashIn 0.4s ease both;
+        }
+
+        .flash.success {
+            background: var(--success-bg);
+            color: var(--success);
+            border: 1px solid rgba(107, 142, 35, 0.2);
+        }
+
+        @keyframes flashIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== Form ===== */
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--c-charcoal);
+            margin-bottom: 8px;
+            letter-spacing: 0.04em;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1px solid var(--c-light);
+            border-radius: 12px;
+            background: var(--c-white);
+            color: var(--c-charcoal);
+            font-family: inherit;
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02) inset;
+        }
+
+        .form-group input:focus {
+            border-color: var(--c-gold);
+            box-shadow: 0 0 0 3px rgba(191, 181, 146, 0.2);
+        }
+
+        .form-group input::placeholder {
+            color: var(--text-dim);
+            opacity: 0.6;
+        }
+
+        .form-group .hint {
+            font-size: 0.72rem;
+            color: var(--c-grey);
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+
+        /* ===== Buttons ===== */
+        .btn-row {
+            display: flex;
+            gap: 16px;
+            margin-top: 36px;
+        }
+
+        .btn {
+            flex: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            letter-spacing: 0.03em;
+        }
+
+        .btn-primary {
+            background: var(--c-charcoal);
+            color: var(--c-white);
+            box-shadow: 0 6px 16px rgba(61, 57, 53, 0.15);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            background: #2a2724;
+            box-shadow: 0 8px 20px rgba(61, 57, 53, 0.25);
+        }
+
+        .btn-secondary {
+            background: var(--c-white);
+            color: var(--c-charcoal);
+            border: 1px solid var(--c-sand);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--c-gold);
+            color: var(--c-gold);
+            background: var(--bg);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        <h1>後台設定</h1>
+        <p class="subtitle">洲遊味蕾旅遊地圖 — QR Code 參數管理</p>
+
+        <div class="divider"></div>
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endwith %}
+
+        <form method="POST" action="/admin">
+            <div class="form-group">
+                <label for="target_url">目標網址 (Target URL)</label>
+                <input type="url" id="target_url" name="target_url" value="{{ config.target_url }}"
+                    placeholder="https://ickaohsiungculinaryjourneymap.lovable.app" required />
+                <p class="hint">掃描有效 QR Code 後，旅客將被引導至該頁面參與活動。</p>
+            </div>
+
+            <div class="form-group">
+                <label for="fallback_url">備用網址 (Fallback URL)</label>
+                <input type="url" id="fallback_url" name="fallback_url" value="{{ config.fallback_url }}"
+                    placeholder="https://ickaohsiung.com" required />
+                <p class="hint">當條碼過期或無效時，安全導向的備用網址。</p>
+            </div>
+
+            <div class="form-group">
+                <label for="expiration_time">時效限制（秒）</label>
+                <input type="number" id="expiration_time" name="expiration_time" value="{{ config.expiration_time }}"
+                    min="60" step="60" required />
+                <p class="hint">預設為 1800 秒（30 分鐘）。基於安全性，逾時需重新獲取條碼。</p>
+            </div>
+
+            <div class="btn-row">
+                <a href="/" class="btn btn-secondary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    檢視地圖
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                        <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
+                    儲存變更
+                </button>
+            </div>
+        </form>
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>洲遊味蕾旅遊地圖</title>
+    <meta name="description" content="高雄洲際酒店 — 洲遊味蕾旅遊地圖活動頁面" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet" />
+    <style>
+        /* ===== Reset & Base ===== */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Palette provided by user */
+            --c-gold: #bfb592;
+            --c-sand: #d4c3b7;
+            --c-grey: #78786e;
+            --c-light: #e1e1e0;
+            --c-white: #ffffff;
+            --c-charcoal: #3d3935;
+
+            --bg: #fdfdfc;
+            --surface: rgba(255, 255, 255, 0.85);
+            --border: rgba(212, 195, 183, 0.5); /* using c-sand with opacity */
+            
+            --text: var(--c-charcoal);
+            --text-dim: var(--c-grey);
+            --card-r: 24px;
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Serif TC', system-ui, sans-serif;
+            background: #ffffff; /* Fallback white background */
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 根據指示：前台背景請參考圖片，透明度 70% */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url('/static/bg.png') center/cover no-repeat;
+            opacity: 0.7; /* 調整透明度為 70% */
+            z-index: 0;
+        }
+
+        /* 原本的飄浮點綴若不再需要可以拿掉，或是保留為 body::after，這裡先保留原本的一層點綴並確保 z-index 為 0 */
+        body::after {
+            content: '';
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(212, 195, 183, 0.15) 0%, transparent 60%);
+            bottom: -200px;
+            right: -150px;
+            z-index: 0;
+            animation: float-slow 25s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes float-slow {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(40px, 30px) scale(1.05); }
+        }
+
+        /* ===== Card ===== */
+        .card {
+            position: relative;
+            z-index: 1;
+            background: var(--surface);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--card-r);
+            padding: 48px 40px 40px;
+            max-width: 440px;
+            width: 90vw;
+            text-align: center;
+            box-shadow: 
+                0 20px 60px rgba(61, 57, 53, 0.06),
+                0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+            animation: cardFadeIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        @keyframes cardFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== Logo ===== */
+        .logo {
+            width: 140px;
+            margin: 0 auto 24px;
+            display: block;
+            opacity: 1;
+        }
+
+        /* ===== Title ===== */
+        .card h1 {
+            font-family: 'Noto Serif TC', serif;
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--c-charcoal);
+            margin-bottom: 8px;
+            letter-spacing: 0.05em;
+        }
+
+        .card .subtitle {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            margin-bottom: 24px;
+            letter-spacing: 0.05em;
+            font-weight: 400;
+        }
+
+        /* ===== Decorative line ===== */
+        .divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 0 auto 28px;
+            width: 60%;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            height: 1px;
+            flex: 1;
+            background: var(--c-sand);
+        }
+
+        .divider span {
+            width: 6px;
+            height: 6px;
+            background: var(--c-gold);
+            transform: rotate(45deg);
+        }
+
+        /* ===== QR wrapper ===== */
+        .qr-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 24px;
+            padding: 16px;
+            background: var(--c-white);
+            border: 1px solid var(--c-sand);
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(212, 195, 183, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .qr-wrapper:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(212, 195, 183, 0.35);
+        }
+
+        .qr-wrapper img {
+            display: block;
+            width: 220px;
+            height: 220px;
+            border-radius: 8px;
+        }
+
+        /* ===== Status badge ===== */
+        .status {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 6px 16px;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--c-grey);
+            background: var(--c-light);
+            letter-spacing: 0.04em;
+            margin-bottom: 8px;
+        }
+
+        .status .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--c-gold);
+            box-shadow: 0 0 6px rgba(191, 181, 146, 0.6);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        /* ===== Refresh button ===== */
+        .btn-refresh {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+            padding: 12px 32px;
+            border: 1px solid var(--c-gold);
+            border-radius: 100px;
+            background: transparent;
+            color: var(--c-charcoal);
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-refresh:hover {
+            background: var(--c-gold);
+            color: var(--c-white);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(191, 181, 146, 0.3);
+        }
+
+        .btn-refresh:active {
+            transform: translateY(0);
+        }
+
+        /* ===== Footer ===== */
+        .footer {
+            margin-top: 24px;
+            font-size: 0.7rem;
+            color: var(--c-sand);
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        <!-- Hotel Logo -->
+        <img class="logo" src="/static/logo.png" alt="高雄洲際酒店" />
+
+        <h1>洲遊味蕾旅遊地圖</h1>
+        <p class="subtitle">掃 QRcode，開啟您的舌尖巡禮</p>
+
+        <div class="divider"><span></span></div>
+
+        <!-- QR Code -->
+        <div class="qr-wrapper">
+            <img id="qr-img" src="data:image/png;base64,{{ qr_image }}" alt="活動 QR Code" />
+        </div>
+
+
+
+        <!-- Manual refresh -->
+        <div>
+            <button class="btn-refresh" onclick="location.reload()">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="23 4 23 10 17 10"></polyline>
+                    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                </svg>
+                重新產生
+            </button>
+        </div>
+
+        <p class="footer">
+            Ticket ID: {{ token[:8] }}
+        </p>
+    </div>
+
+    <!-- Silent auto-refresh for token expiration security -->
+    <script>
+        setTimeout(function () { location.reload(); }, ({{ expiration }} - 10) * 1000);
+    </script>
+
+</body>
+
+</html>
